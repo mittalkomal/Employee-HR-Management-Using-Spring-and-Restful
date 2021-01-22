@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.springframework.org/schema/beans">
+	<bean class="org.apache.commons.dbcp.BasicDataSource"
+		id="dataSource">
+		<property value="com.mysql.jdbc.Driver"
+			name="driverClassName" />
+		<property
+			value="jdbc:mysql://localhost:3306/employeeManagement" name="url" />
+		<property value="root" name="username" />
+		<property value="root" name="password" />
+	</bean>
+	<bean
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean"
+		id="sessionFactoryUser">
+		<property name="dataSource" ref="dataSource" />
+		<property name="annotatedClasses">
+			<list>
+				<value>com.nagarro.javaTraining.model.User</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.show_sql">true</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<bean id="multipartResolver" name="filterMultipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="10000000" />
+	</bean>
+
+	<bean class="org.springframework.orm.hibernate5.HibernateTemplate"
+		id="templateUser">
+		<property name="sessionFactory" ref="sessionFactoryUser" />
+	</bean>
+	<bean class="com.nagarro.javaTraining.dao.UserDaoImpl"
+		id="userdao">
+		<property name="template" ref="templateUser" />
+	</bean>
+
+	
+</beans>
